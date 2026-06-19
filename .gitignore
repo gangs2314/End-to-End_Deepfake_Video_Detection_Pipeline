@@ -1,10 +1,25 @@
-@"
-node_modules/
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Large binary files (optional but recommended)
+*.pyd
+*.dll
+*.so
+*.bin
+*.pyc
+__pycache__/
+
+# Environment variables
 .env
 .env.local
-dist/
-build/
-*.log
-.DS_Store
-Thumbs.db
-"@ | Out-File -FilePath .gitignore -Encoding utf8
+
+# Data files (if any)
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pb
