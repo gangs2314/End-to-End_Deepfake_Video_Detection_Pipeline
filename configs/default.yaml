@@ -1,0 +1,51 @@
+dataset:
+  name: "faceforensics++"
+  split_method: "video_identity"
+  test_split: 0.2
+  val_split: 0.1
+  seed: 42
+  frame_sample_strategy: "uniform"
+  frames_per_video: 8
+
+preprocessing:
+  face_detection_model: "retinaface"
+  face_size: 224
+  align_faces: true
+  normalize: true
+
+model:
+  baseline:
+    architecture: "efficientnet"
+    pretrained: true
+    freeze_backbone: false
+  temporal:
+    type: "lstm"
+    hidden_dim: 256
+    num_layers: 2
+    dropout: 0.5
+
+training:
+  batch_size: 32
+  epochs: 20
+  learning_rate: 0.0001
+  optimizer: "adam"
+  criterion: "bce_with_logits"
+  device: "cuda"
+
+evaluation:
+  metrics:
+    - "auc_roc"
+    - "eer"
+    - "accuracy"
+  per_manipulation_type: true
+  cross_dataset_eval: true
+
+experiment_tracking:
+  enabled: true
+  backend: "wandb"
+
+paths:
+  data_root: "./data"
+  model_dir: "./model"
+  output_dir: "./outputs"
+  log_dir: "./logs"
