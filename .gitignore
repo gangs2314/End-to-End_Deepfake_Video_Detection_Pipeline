@@ -1,0 +1,25 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Large binary files (optional but recommended)
+*.pyd
+*.dll
+*.so
+*.bin
+*.pyc
+__pycache__/
+
+# Environment variables
+.env
+.env.local
+
+# Data files (if any)
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pb
