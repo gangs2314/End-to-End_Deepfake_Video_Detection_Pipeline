@@ -130,19 +130,33 @@ class DeepfakeEvaluator:
                 'count': int(np.sum(mask)),
                 'accuracy': float(accuracy_score(type_targets, type_preds)),
                 'auc_roc': float(roc_auc_score(type_targets, type_probs)) if len(np.unique(type_targets)) > 1 else 0.0,
-                'eer': float(self._compute_eer(type_targets, type_probs)),
+                'eer': float(self._compute_eer(type_targets, type_probs)) if len(np.unique(type_targets)) > 1 else 0.0,
                 'real_count': int(np.sum(type_targets == 0)),
                 'fake_count': int(np.sum(type_targets == 1))
             }
 
-            # Per-class metrics
+            # Per-class metrics (handle edge cases where one class is missing)
             report = classification_report(type_targets, type_preds, output_dict=True, zero_division=0)
-            results[manip_type]['precision_real'] = float(report['0']['precision'])
-            results[manip_type]['recall_real'] = float(report['0']['recall'])
-            results[manip_type]['f1_real'] = float(report['0']['f1-score'])
-            results[manip_type]['precision_fake'] = float(report['1']['precision'])
-            results[manip_type]['recall_fake'] = float(report['1']['recall'])
-            results[manip_type]['f1_fake'] = float(report['1']['f1-score'])
+
+            # Safely get metrics for class 0 (real)
+            if '0' in report:
+                results[manip_type]['precision_real'] = float(report['0']['precision'])
+                results[manip_type]['recall_real'] = float(report['0']['recall'])
+                results[manip_type]['f1_real'] = float(report['0']['f1-score'])
+            else:
+                results[manip_type]['precision_real'] = 0.0
+                results[manip_type]['recall_real'] = 0.0
+                results[manip_type]['f1_real'] = 0.0
+
+            # Safely get metrics for class 1 (fake)
+            if '1' in report:
+                results[manip_type]['precision_fake'] = float(report['1']['precision'])
+                results[manip_type]['recall_fake'] = float(report['1']['recall'])
+                results[manip_type]['f1_fake'] = float(report['1']['f1-score'])
+            else:
+                results[manip_type]['precision_fake'] = 0.0
+                results[manip_type]['recall_fake'] = 0.0
+                results[manip_type]['f1_fake'] = 0.0
 
         return results
 
